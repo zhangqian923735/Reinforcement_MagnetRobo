@@ -134,11 +134,19 @@ class sub_train_env:
 
 	# 重启环境
 	def reset(self):
-		end_pos = random.choice(self.opt.end_points)
+		
+		self.opt.end_distance
+		angle = random.randint(0, 628) / 100
+		pos_ball = tuple([int(i/2) for i in self.env.engine.size])
+		end_pos = tuple([
+			int(pos_ball[0] + np.sin(angle) * self.opt.end_distance),
+			int(pos_ball[1] + np.cos(angle) * self.opt.end_distance),
+		]) 
 		self.env.close()
-		state = self.env.reset(pos_target=end_pos)
+		state = self.env.reset(pos_ball=pos_ball, pos_target=end_pos)
 		state = img_resize(state, self.opt.pic_size)
 		return state
+
 
 	# 环境执行一步
 	def step(self, a, render=False):
@@ -148,8 +156,9 @@ class sub_train_env:
 			self.env.render()
 		if d:
 			self.env.close()
-			end_pos = random.choice(self.opt.end_points)
-			s_next = self.env.reset(pos_target=end_pos)
+			s_next = self.reset()
+			return s_next, r, d, debug
+		
 		s_next = img_resize(s_next, self.opt.pic_size)
 		return s_next, r, d, debug
 
@@ -236,7 +245,7 @@ class Mult_Envs_Stepper:
 		while True:
 			request, action = self.env_conns[index].recv()
 			if request == "step":
-				self.env_conns[index].send(Own_env.step(action, False))
+				self.env_conns[index].send(Own_env.step(action, self.opt.render_all))
 			elif request == "reset":
 				self.env_conns[index].send(Own_env.reset())
 			else:

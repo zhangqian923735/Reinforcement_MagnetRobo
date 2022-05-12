@@ -21,16 +21,18 @@ def get_args():
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--num_epochs', type=int, default=int(1e6))
     parser.add_argument('--pic_size', type=tuple, default=(96, 96))
-    parser.add_argument('--train_times', type=int, default=10)          # 平均每个数据采样学习多少次
+    parser.add_argument('--train_times', type=int, default=8)          # 平均每个数据采样学习多少次
+
     parser.add_argument("--num_processes", type=int, default=8)
+
     parser.add_argument("--save_interval", type=int, default=50, help="Number of steps between savings")
     parser.add_argument("--plot_interval", type=int, default=10, help="Number of steps between plot result")
     parser.add_argument("--max_actions", type=int, default=500, help="Maximum repetition steps in test phase")
-    parser.add_argument("--name", type=str, default="MINI_CNN_FC")
+    parser.add_argument("--name", type=str, default="ROUND_TARGET")
     parser.add_argument("--map", type=str, default="real.json")
     # parser.add_argument("--end_points", type=tuple, default=((270,100),))
-    parser.add_argument("--end_points", type=tuple, default=((24, 531),(310, 485),(362, 90),(567, 331)))
-    parser.add_argument("--radius", type=float, default=6.5)
+    parser.add_argument("--end_distance", type=int, default=220)
+    parser.add_argument("--render_all", type=bool, default=False)
     args = parser.parse_args()
     return args
 
