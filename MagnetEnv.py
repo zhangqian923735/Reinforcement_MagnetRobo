@@ -4,7 +4,7 @@ import pygame
 
 class MagnetEnv():
     max_steps  = 300
-    step_penalty   = -0.1
+    step_penalty   = 0
     screen = None
     
     def __init__(self, size=(600,600)) -> None:
@@ -31,9 +31,9 @@ class MagnetEnv():
         self.engine.step(1/FPS)
         s = np.array(pygame.surfarray.pixels3d(self.engine.render()))
         reward_distance = self.engine.get_target_dis()
-        if reward_distance < 5 or self.now_steps > self.max_steps:
+        if reward_distance < 50 or self.now_steps >= self.max_steps:
             done = True
-            reward = - np.log(reward_distance * 0.001)
+            reward = - np.log(reward_distance * 0.001 + 1e-6)
         else:
             done = False
             reward = self.step_penalty
@@ -52,8 +52,9 @@ class MagnetEnv():
     def render(self)->None:
         """渲染窗口"""
         screen = pygame.display.set_mode((600, 600)) if self.screen is None else screen
-        screen.blit(self.engine.Suface)
+        screen.blit(self.engine.Suface, (0,0))
         pygame.display.flip()
+        pygame.display.set_caption(f"step:{self.now_steps}/{self.max_steps}")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.close()
@@ -61,7 +62,7 @@ class MagnetEnv():
     def close(self):
         """关闭窗口"""
         if self.screen is not None:
-            pygame.quit()
+            pygame.display.quit()
             self.screen = None
 
 if __name__ == "__main__":

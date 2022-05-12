@@ -16,7 +16,7 @@ class magnetEngine():
     def __init__(self, size:tuple[int,int]=(600, 600)) -> None:
         self.size = size
         self.strength, self.dis_coeff, self.viscous_coeff = 0, 0, 0
-        self.change_force()
+        self.change_force(10000000, 0, 0.05)
         self.space = pymunk.Space()
         self.body_index = []
         self.poly = []
@@ -72,10 +72,13 @@ class magnetEngine():
         """施加磁场力到小磁球上"""
         for key, ball in enumerate(self.body_index):
             dis = ball.position.get_distance((self.magnet_pos))
-            dir = ((self.magnet_pos) - ball.position).normalized()
-            mag_force = self.strength / (self.dis_coeff*dis + 60)
-            mag_force = mag_force * dir 
-            ball.apply_force_at_world_point(mag_force, ball.position)
+            if dis < 100:
+                dir = ((self.magnet_pos) - ball.position).normalized()
+                mag_force = self.strength / (self.dis_coeff*dis + 60)
+                mag_force = mag_force * dir 
+                ball.apply_force_at_world_point(mag_force, ball.position)
+            else:
+                mag_force = pymunk.Vec2d(0, 0)
             #施加粘滞阻力
             try:
                 dir = - ball.velocity.normalized()

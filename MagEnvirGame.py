@@ -2,18 +2,20 @@ import pygame
 import MagnetEnv
 
 pygame.init()
+r = 0
 FPS = 120
 clock = pygame.time.Clock()
 size = (1200, 600)
 Env = MagnetEnv.MagnetEnv(size)
-Env.engine.change_force(1000000, 0, 0.05)
+Env.engine.change_force(10000000, 0, 0.05)
 screen = pygame.display.set_mode(size)
 
 def main_loop():
+    global r
     """主循环"""
     while True:
         act = event_handler()
-        Env.step(act, FPS)
+        _, r ,_, _ = Env.step(act, FPS)
         render()
         clock.tick(FPS)
 
@@ -40,7 +42,7 @@ def event_handler():
 def render():
     screen.blit(Env.engine.Suface, (0,0))
     pygame.display.flip()
-    pygame.display.set_caption(str(Env.engine.get_target_dis()))
+    pygame.display.set_caption(str(Env.engine.get_target_dis())+"-"+str(r))
 
 def main():
    main_loop()
