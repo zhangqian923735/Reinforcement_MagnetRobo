@@ -3,7 +3,7 @@
 """
 import numpy as np
 import collections
-import random
+import rando0218
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
